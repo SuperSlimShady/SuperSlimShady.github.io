@@ -2,7 +2,9 @@ body{
   font: 15px/1.5 Arial, Helvetica,sans-serif;
   padding:0;
   margin:0;
-  background-color:#11d68d;
+  background-color:
+#f44161
+;
 }
 
 /* Global */
@@ -40,7 +42,7 @@ header{
   color:#ffffff;
   padding-top:30px;
   min-height:70px;
-  border-bottom:#e8491d 3px solid;
+  border-bottom:#41a9f4 3px solid;
 }
 
 header a{
@@ -70,7 +72,7 @@ header nav{
 }
 
 header .highlight, header .current a{
-  color:#ff1000;
+  color:#41a9f4;
   font-weight:bold;
 }
 
@@ -159,14 +161,14 @@ ul#services li{
   padding:20px;
   border: #cccccc solid 1px;
   margin-bottom:5px;
-  background:#e6e6e6;
+  background:#41a9f4;
 }
 
 footer{
   padding:20px;
   margin-top:20px;
   color:#ffffff;
-  background-color:#e8491d;
+  background-color:#41a9f4;
   text-align: center;
 }
 
