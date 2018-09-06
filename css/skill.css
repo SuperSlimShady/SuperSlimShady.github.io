@@ -2,21 +2,20 @@ body{
   font: 15px/1.5 Arial, Helvetica,sans-serif;
   padding:0;
   margin:0;
-  background-color:
-#f44161
-;
+  background-color:#35424a;
 }
 
 /* Global */
 .container{
-  width:80%;
+  
+  width:90%;
   margin:auto;
   overflow:hidden;
 }
 
 ul{
-  margin:0;
-  padding:0;
+  margin:150;
+  padding:150;
 }
 
 .button_1{
@@ -53,7 +52,7 @@ header a{
 }
 
 header li{
-  float:left;
+  float:center;
   display:inline;
   padding: 0 20px 0 20px;
 }
@@ -204,4 +203,12 @@ footer{
     width:100%;
     margin-bottom:5px;
   }
+}
+#bannerimage {
+  width: 100%;
+  background-image: url(../img/paintballs.jpg);
+  height: 100px;
+  background-color: purple;
+  background-position: center;
+  background-size:  
 }
