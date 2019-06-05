@@ -6,87 +6,164 @@
 </head>
 <body>
 <script type="text/processing">
-/**
-  *Author: Landon Campos  
-  *Version: 1 5/16/19
-  */
-PImage uwu; 
-PImage ted2; 
-PImage wall; 
-PImage starting;
+int grid = 20;
+PVector food;
+int speed = 25;
+int highscore = 0;
+//boolean 1 = true;
+Snake snake;
 int gamestate = 1;
-int score = 0;
-int highScore = 0;
-int x = 0, y , vy = 0;
-int[] wx = new int[2];
-int[] wy = new int[2];
+PImage ted2;
 
-void setup(){
-size(750,1000);
-//fullScreen();
-uwu = loadImage("./img/uwu.png");
-ted2 = loadImage("./img/ted2.png");
-wall = loadImage("./img/wall.png");
-starting = loadImage ("./img/starting.png");      
-     
+void setup() {
+  size (500,500);
+  snake = new Snake();
+  food = new PVector();
+  newFood();
+  frameRate(8);
+  ted2 = loadImage("./ted2.png");
 }
-void draw() {
-    
-  if(gamestate == 0) {
-      imageMode(CORNER);
-      image(uwu, x, 0);
-      image(uwu, x+uwu.width, 0);
-      imageMode(CENTER);
-     x -= 6;
-     vy += 1;
-     y += vy;  
-     for(int i = 0  ; i < 2; i++) {
-       //wy[i] = (int)random(25,height/200 + 150);
-       image(wall, wx[i] , wy[i] - (wall.height/2+150));
-      image(wall, wx[i] , wy[i] + (wall.height/2+150));
-       if(wx[i]  < 0) {
-         wy[i] = (int)random(200,height-200 );
-         wx[i] = width;
-        }
-        if(wx[i] == width/2) {
-          score++;
-          highScore = max(score, highScore);  
-      }
-      if( y > height || y < 0 || (abs(width/2-wx[i])<25 && abs (y-wy[i])>100)) {    
-     gamestate = 1;
-   }
-        wx[i] -= 6;
-     }  
-           image(ted2, width/2 , y);
-     text(""+score, width/2-15, 700);   
-    }
-     if(x < -(uwu.width)){
-       x = 0;
-     }
-    
-     if(gamestate == 1) {
-       imageMode(CENTER);
-       image(starting, width/2,height/2);
-       text("High Score: "+highScore, 50, width);
-    }
-   }
 
+void draw (){
+  background(0);
+  
+  if (gamestate == 1){
+  makeButton();
+  }
+  if (gamestate == 0){
+  if (frameCount % 10 ==0){
+  snake.update();
+  }
+  speed++;
+  snake.show();
+  snake.eat();
+  fill(255,0,0);
+  rect(food.x,food.y,grid,grid);
+  textAlign(LEFT);
+  textSize(15);
+  fill(255);
+  text("Score: " + snake.len, 10, 20);
+} else {
+  fill(25);
+  textAlign(CENTER,CENTER);
+  
+  textSize(25);
+  text("Snake Game\nClick to start" + "\nHighScore: " + highscore, width/2, height/2);
+  if(snake.len == 10){
+    image(ted2, 10, 10);
+  }
+}
+}
 
+void makeButton(){
+if(gamestate == 1);
+  fill(255);
+if(mouseX > 200 && mouseX < 400 && mouseY > 200 && mouseY < 250){
+fill(120); 
+}
+rect(100,200, 300, 50, 15); 
+fill(255,0,0);
+textSize(35);
+if(mouseX > 200 && mouseX < 400 && mouseY > 200 && mouseY < 250){
+fill(0,0,255); //Change to BLUE IF Mouse X and MouseY are in RECT
+if(mousePressed){
+textSize(35); //WHEN CLICKED MAKES THE TEXT SIZE BIGGER
+}
+}
+text("PLAY AGAIN OR SUS?", 240, 220);
+}
+
+void newFood(){
+ food.x = floor(random(width));
+ food.y = floor(random(height));
+ food.x = floor(food.x/grid) * grid;//keeps the snake on track
+ food.y = floor(food.y/grid) * grid;
+ 
+}
 
 void mousePressed(){
- vy = -17;
-  if(gamestate==1) {
-    wx[0] = 600;
-    wy[0] = height/2;
-    wx[1] = 900;
-    wy[1] = 600;
-    x = 0;
-    y = height / 2;
-    gamestate = 0;
-  
-
-
+  if (gamestate == 1) {
+  snake = new Snake();
+  newFood();
+  speed = 10;
+  gamestate = 0 ;
+  }
 }
+class Snake{
+  PVector pos;
+  PVector vel;
+  ArrayList<PVector> hist;
+  int len;
+  int moveX = 0;
+  int moveY = 0;
+  
+  
+  Snake(){
+    pos = new PVector(0, 0);
+    vel = new PVector();
+    hist = new ArrayList<PVector>();
+    len = 0;
+    
+  }
+  void update(){
+    hist.add(pos.copy());
+    pos.x += vel.x*grid;
+    pos.y += vel.y*grid;
+    moveX = int(vel.x);
+    moveY = int(vel.y);
+    
+    pos.x = (pos.x+width) % width;
+    pos.y = (pos.y + height) % height; 
+    
+    if (hist.size() > len){
+      hist.remove(0);
+    }
+   for (PVector p : hist){
+     if (p.x == pos.x & p.y == pos.y){
+       gamestate = 1;
+       if (len > highscore) highscore = len;
+     }  
+ }
+  }
+  
+  
+  void eat() {
+  if (pos.x == food.x && pos.y == food.y ){
+    len++;
+    if (speed> 5 )speed--;
+    newFood();
+  
+  }
+  }
+  
+  
+  void show(){
+    noStroke();
+    fill(125);
+    rect(pos.x,pos.y,grid,grid);
+    for(PVector p : hist) {
+      
+      rect(p.x, p.y, grid, grid);
+    }
+  }
+}
+
+void keyPressed(){
+  //print(keyCode);
+  if (keyCode == LEFT && snake.moveX != 1){
+   snake.vel.x = -1; 
+   snake.vel.y = 0;
+   
+  } else if (keyCode == RIGHT && snake.moveX != -1 ){
+    snake.vel.x =1;
+    snake.vel.y = 0;
+  } else if(keyCode == DOWN && snake.moveY != 1){
+    snake.vel.y = 1;
+    snake.vel.x = 0;
+  } else if (keyCode == UP && snake.moveY != -1){
+    snake.vel.y = -1;
+    snake.vel.x = 0;
+  }
 }
 
 
